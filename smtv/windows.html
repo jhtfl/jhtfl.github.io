@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Instruction to play SMTV in tiles on Windows platform</h1>
+
+<p>
+    <li>Download the latest releases of <a href="https://ffmpeg.org/download.html" rel="nofollow">ffmpeg</a> and <a href="https://github.com/yt-dlp/yt-dlp/releases">yt-dlp</a> and put them on your PATH.</li>
+    <li>Create a new batch file named something like <code>smtv.bat</code>, and inside it, place following contents:</li>
+</p>
+
+    <table border="1">
+        <tr>
+            <td style="padding:10px">
+@echo off<br>
+<br>
+set ww=%1<br>
+set hh=%2<br>
+<br>
+set url="https://www.youtube.com/watch?v=ZzWBpGwKoaI"<br>
+set useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"<br>
+set format=93<br>
+set upres=3<br>
+<br>
+@echo on<br>
+<br>
+:loop<br>
+<br>
+yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay - -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet -fs<br>
+<br>
+goto loop
+            </td>
+        </tr>
+    </table>
+<p>
+    <li>Run smtv.bat with column number and row number. For example: "smtv.bat 4 3" will play SMTV in tiles as 4 columns and 3 rows</li>
+</p>
+
+</body>
+</html>
+
