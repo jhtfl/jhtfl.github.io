@@ -25,7 +25,10 @@ rem Use the following For clear picture<br>
 rem set format=93<br>
 rem set upres=3<br>
 <br>
-yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay - -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet<br>
+:loop<br>
+yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay - -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet -fs<br>
+timeout 3<br>
+goto loop<br>
             </td>
         </tr>
     </table>
