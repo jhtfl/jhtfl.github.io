@@ -1,0 +1,33 @@
+#!/bin/zsh
+
+if [ "$2" = "" ]; then
+    echo "Usage: $0 <width> <height>"
+    exit 1
+fi
+
+ww=$1
+hh=$2
+
+url="https://www.youtube.com/watch?v=ZzWBpGwKoaI"
+useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+channel="rtmp://a.rtmp.youtube.com/live2/6vvu-bfvg-ewxa-6rt0-4mqm"
+format=91
+upres=7.5
+#format=93
+#upres=3
+
+#while true; do
+    # Standard way to play video in tiles when $ww and $hh are small numbers
+    yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffplay -vf "scale=w=iw*$upres/${ww}:h=ih*$upres/${hh},fps=source_fps*${ww}*${hh},tile=${ww}x${hh}" -autoexit -fs -
+
+    # Standard way to cast video in tiles to my youtube channel when $ww and $hh are small numbers
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf "scale=w=iw*$upres/${ww}:h=ih*$upres/${hh},fps=source_fps*${ww}*${hh},tile=${ww}x${hh}" -autoexit -f flv $channel
+
+    # Play video in tiles using pipe when $ww and $hh are large numbers than monitor resolution
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf "scale=w=16:h=9,fps=source_fps*120*120,tile=120x120" -f flv - | ffplay -vf "scale=w=16:h=9,fps=source_fps*120*120,tile=120x120" -autoexit -fs -
+
+    # Optimized way to play video in tiles when $ww and $hh are large numbers than monitor resolution
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffplay -vf "scale=w=1:h=1,scale=w=${ww}:h=${hh}" -autoexit -fs -
+
+#    sleep 3
+#done
