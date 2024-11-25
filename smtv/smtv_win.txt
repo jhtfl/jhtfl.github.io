@@ -13,8 +13,8 @@ rem set upres=3
 
 :loop
 rem Standard way to play video in tiles when $ww and $hh are small numbers
-rem yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet -fs -
+yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet -fs -
 rem Optimized way to play video in tiles when $ww and $hh are large numbers than monitor resolution
-yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=1:h=1,scale=w=%ww%:h=%hh%" -autoexit -fs -
+rem yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=1:h=1,scale=w=%ww%:h=%hh%" -autoexit -fs -
 timeout 3
 goto loop
