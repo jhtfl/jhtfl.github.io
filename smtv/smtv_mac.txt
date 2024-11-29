@@ -5,29 +5,55 @@ if [ "$2" = "" ]; then
     exit 1
 fi
 
+# Maximum are 1024*(16x9)=16384x9216
 ww=$1
 hh=$2
 
-url="https://www.youtube.com/watch?v=ZzWBpGwKoaI"
+# Original 1080p
+#url="https://www.youtube.com/watch?v=ZzWBpGwKoaI"
+# Max 4x10^16 (Forty Quadrillion)
+url="https://www.youtube.com/watch?v=Q7M02A2-m5I"
+
 useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
 channel="rtmp://a.rtmp.youtube.com/live2/6vvu-bfvg-ewxa-6rt0-4mqm"
-format=91
-upres=7.5
+
+# 256x144x15
+#format=91
+#upres=7.5
+# 640x360x30
 #format=93
 #upres=3
+# 1280x720x30
+#format=95
+#upres=1.5
+# 1920x1080x30
+format=96
+upres=1
+
+# Filter used when $ww and $hh are small numbers
+#filter=scale=w=iw*$upres/${ww}:h=ih*$upres/${hh},fps=source_fps*${ww}*${hh},tile=${ww}x${hh}
+# Static filter for playing 120x120=14400 tiles with size to be 16x9
+#filter=scale=w=16:h=9,fps=source_fps*120*120,tile=120x120
+# Optimized filter when $ww and $hh are large numbers (>120)
+filter=scale=w=1:h=1,scale=w=${ww}:h=${hh}
+# Optimized filter overlayed with a single window (640x360)
+#filter="split[bg][fg];[bg]scale=w=1:h=1,scale=w=${ww}:h=${hh}[bg1];[fg]scale=w=${ww}/3:h=${hh}/3[fg1];[bg1][fg1]overlay=${ww}/3:${hh}/3"
+
+# Option for playing in full screen
+#fs=-fs
 
 #while true; do
-    # Standard way to play video in tiles when $ww and $hh are small numbers
-    yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffplay -vf "scale=w=iw*$upres/${ww}:h=ih*$upres/${hh},fps=source_fps*${ww}*${hh},tile=${ww}x${hh}" -autoexit -fs -
+    # Standard way to play video directly
+    yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffplay -vf $filter -autoexit $fs -
 
-    # Standard way to cast video in tiles to my youtube channel when $ww and $hh are small numbers
-    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf "scale=w=iw*$upres/${ww}:h=ih*$upres/${hh},fps=source_fps*${ww}*${hh},tile=${ww}x${hh}" -autoexit -f flv $channel
+    # Play video using pipe to multiply tiles
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf $filter -f flv - | ffplay -vf $filter -autoexit $fs -
 
-    # Play video in tiles using pipe when $ww and $hh are large numbers than monitor resolution
-    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf "scale=w=16:h=9,fps=source_fps*120*120,tile=120x120" -f flv - | ffplay -vf "scale=w=16:h=9,fps=source_fps*120*120,tile=120x120" -autoexit -fs -
+    # Cast video to my youtube channel
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf $filter -c:v h264 -c:a aac -g 120 -f flv $channel
 
-    # Optimized way to play video in tiles when $ww and $hh are large numbers than monitor resolution
-    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffplay -vf "scale=w=1:h=1,scale=w=${ww}:h=${hh}" -autoexit -fs -
+    # Cast video to my youtube channel while output locally as well
+    #yt-dlp $url --user-agent $useragent -4 -f $format -o - | ffmpeg -i pipe: -vf $filter -c:v h264 -c:a aac -g 120 -f flv - | ffmpeg -i pipe: -c copy -f flv $channel -c copy -f flv - | ffplay -autoexit $fs -
 
 #    sleep 3
 #done

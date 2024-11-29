@@ -3,18 +3,20 @@
 set ww=%1
 set hh=%2
 
-set "url=https://www.youtube.com/watch?v=ZzWBpGwKoaI"
+rem Original 1080p
+rem set "url=https://www.youtube.com/watch?v=ZzWBpGwKoaI"
+rem Max 4x10^16 (Forty Quadrillion)
+set "url=https://www.youtube.com/watch?v=Q7M02A2-m5I"
 set "useragent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-set format=91
-set upres=7.5
-rem Use the following For clear picture
-rem set format=93
-rem set upres=3
+set format=96
+set upres=1
+
+rem Filter used when $ww and $hh are small numbers
+rem set "filter=scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%"
+rem Optimized filter when $ww and $hh are large numbers (>120)
+set "filter=scale=w=1:h=1,scale=w=%ww%:h=%hh%"
 
 :loop
-rem Standard way to play video in tiles when $ww and $hh are small numbers
-yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=iw*%upres%/%ww%:h=ih*%upres%/%hh%,fps=source_fps*%ww%*%hh%,tile=%ww%x%hh%" -autoexit -loglevel quiet -fs -
-rem Optimized way to play video in tiles when $ww and $hh are large numbers than monitor resolution
-rem yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "scale=w=1:h=1,scale=w=%ww%:h=%hh%" -autoexit -fs -
+yt-dlp "%url%" --user-agent "%useragent%" -4 -f "%format%" -o - | ffplay -vf "%filter%" -autoexit -fs -
 timeout 3
 goto loop
