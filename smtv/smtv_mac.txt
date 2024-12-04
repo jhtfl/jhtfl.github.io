@@ -12,7 +12,7 @@ hh=$2
 # Original 1080p
 #url="https://www.youtube.com/watch?v=ZzWBpGwKoaI"
 # Max 4x10^16 (Forty Quadrillion)
-url="https://www.youtube.com/watch?v=Q7M02A2-m5I"
+url="https://www.youtube.com/watch?v=DGagyjRhQsU"
 
 useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
 channel="rtmp://a.rtmp.youtube.com/live2/6vvu-bfvg-ewxa-6rt0-4mqm"
